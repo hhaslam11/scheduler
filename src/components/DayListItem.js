@@ -5,6 +5,12 @@ import classnames from"classnames";
 import "./DayListItem.scss";
 
 
+function renderSpots(spots) {
+  if (spots === 0) return 'no spots remaining';
+  if (spots === 1) return '1 spot remaining';
+  return `${spots} spots remaining`;
+}
+
 export default function DayListItem(props) {
   
   const dayClass = classnames("day-list__item", {
@@ -18,7 +24,7 @@ export default function DayListItem(props) {
       onClick={() => props.setDay(props.name)}
     >
       <h2 className="text--regular">{props.name}</h2>
-      <h3 className="text--light">{props.spots}</h3>
+      <h3 className="text--light">{renderSpots(props.spots)}</h3>
     </li>
   )
 }
