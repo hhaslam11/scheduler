@@ -1,27 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 import "components/Application.scss";
-
+import "components/Application";
 import DayList from "./DayList";
+import Appointment from "./Appointment";
 
-//mock data
-const days = [
-  {
-    id: 1,
-    name: "Monday",
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: "Tuesday",
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: "Wednesday",
-    spots: 0,
-  },
-];
 
 const appointments = [
   {
@@ -82,6 +66,21 @@ const appointments = [
 export default function Application(props) {
 
   const [day, setDay] = useState('Monday');
+  const [days, setDays] = useState([]);
+
+  useEffect(() => {
+    axios.get('/api/days')
+      .then(res => {
+        console.log(res.data);
+        setDays(res.data);
+      });
+  }, []);
+
+  const appointmentList = appointments.map(appointment => {
+    return (
+      <Appointment key={appointment.id} {...appointment} />
+    );
+  });
 
   return (
     <main className="layout">
@@ -107,7 +106,7 @@ export default function Application(props) {
         />
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {appointmentList}
       </section>
     </main>
   );
