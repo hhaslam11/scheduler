@@ -10,8 +10,8 @@ export default function InterviewerList(props) {
         id={interviewer.id}
         name={interviewer.name}
         avatar={interviewer.avatar}
-        value={props.interviewer === interviewer.id}
-        onChange={event => props.setInterviewer(interviewer.id)}
+        value={props.value === interviewer.id}
+        onChange={event => props.onChange(interviewer.id)}
       />
     );
   });

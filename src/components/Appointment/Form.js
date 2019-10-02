@@ -4,18 +4,34 @@ import InterviewerList from "../InterviewerList";
 import Button from "../Button";
 import "./styles.scss";
 
+
+
 export default function Form(props) {
-  const [interviewer, setInterviewer] = useState("");
+  const [name, setName] = useState(props.name || "");
+  const [interviewer, setInterviewer] = useState(props.interviewer || null);
   
+  function reset() {
+    setName("");
+    setInterviewer(null);
+  }
+
+  function cancel() {
+    reset();
+    props.onCancel();
+  }
+
   return (
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={event => event.preventDefault()}>
           <input
             className="appointment__create-input text--semi-bold"
             name="name"
             type="text"
-            placeholder="Enter Student Name"
+            placeholder={"Enter Student Name"}
+            value={name || ""}
+            onInput={event => setName(event.target.value)}
+            
             /*
               This must be a controlled component
             */
@@ -25,8 +41,8 @@ export default function Form(props) {
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
-          <Button danger>Cancel</Button>
-          <Button confirm>Save</Button>
+          <Button onClick={cancel} danger>Cancel</Button>
+          <Button onClick={props.onSave} confirm>Save</Button>
         </section>
       </section>
     </main>
