@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react-hooks";
 
-import {useVisualMode, transition} from "hooks/useVisualMode";
+import useVisualMode from "hooks/useVisualMode";
 
 
 //test modes
