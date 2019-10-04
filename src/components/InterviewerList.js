@@ -3,6 +3,13 @@ import InterviewerListItem from "./InterviewerListItem";
 
 import "./InterviewerList.scss";
 
+/*
+interviewers={props.interviewers} value={interviewer} onChange={setInterviewer} />
+*/
+
+/**
+ * @param {object} props {interviewers (object from top level -application- state), value (interviewer id) onChange (function to setInterviewer)} 
+ */
 export default function InterviewerList(props) {
   const interviewers = props.interviewers.map(interviewer => {
     return (
@@ -10,7 +17,7 @@ export default function InterviewerList(props) {
         id={interviewer.id}
         name={interviewer.name}
         avatar={interviewer.avatar}
-        value={props.value === interviewer.id}
+        value={props.value === interviewer.id /* checks if */}
         onChange={event => props.onChange(interviewer.id)}
       />
     );

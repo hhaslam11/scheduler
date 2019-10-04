@@ -18,6 +18,11 @@ export function getAppointmentsForDay(state, day) {
   return appointmentsArr;
 }
 
+/**
+ * @param {state} state entire state object
+ * @param {object} interview interview object that will only have an interviewer id
+ * @return {object} inteview object with full interviewer object (id, name, avatar)
+ */
 export function getInterview(state, interview) {
   if (!interview) return null;
 

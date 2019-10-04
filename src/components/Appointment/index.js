@@ -1,5 +1,4 @@
 import React from "react";
-import { action } from "@storybook/addon-actions";
 
 import Header from "./Header";
 import Show from "./Show";
@@ -13,10 +12,30 @@ const EMPTY = "EMPTY";
 const SHOW = "SHOW";
 const CREATE = "CREATE";
 
+/**
+ * @param {object} props {key, id, time, interview (object), bookInterview (function)}
+ */
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
   );
+
+  /**
+   * Save an appointment
+   * @param {string} name student name
+   * @param {number} interviewer interviewer id
+   */
+  function save(name, interviewer) {
+    const interview = {
+      student: name,
+      interviewer
+    };
+    transition(SHOW);
+
+    //TODO the bookInterview function currently accepts an appointments ID, while
+    //this call is passing in the interviewer Id. i think something is wrong here. :/
+    props.bookInterview(interviewer, interview);
+  }
 
   return (
     <article className="appointment">
@@ -25,13 +44,13 @@ export default function Appointment(props) {
       {mode === SHOW && (
         <Show
           student={props.interview.student}
-          interviewer={props.interview.interviewer}
+          interviewer={props.interview.interviewer /* {id, name, avater} */}
         />
       )}
       {mode === CREATE &&
         <Form
-          interviewers={[]}
-          onSave={action("onSave")}
+          interviewers={props.interviewers}
+          onSave={save}
           onCancel={back}
         />
       }
