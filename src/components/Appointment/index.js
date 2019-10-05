@@ -6,7 +6,6 @@ import Empty from "./Empty";
 import Form from "./Form";
 import Status from "./Status";
 import Confirm from "./Confirm";
-import Edit from "./Edit";
 import "./styles.scss";
 
 //modes
@@ -57,7 +56,15 @@ export default function Appointment(props) {
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SAVING && <Status message='Saving...' />}
       {mode === DELETING && <Status message='Deleting...' />}
-      {mode === EDIT && <Edit />}
+      {mode === EDIT && 
+        <Form
+          interviewer={props.interview.interviewer.id}
+          name={props.interview.student}
+          interviewers={props.interviewers}
+          onSave={save}
+          onCancel={back}
+        />
+      }
       {mode === CONFIRM && (
         <Confirm
           message='Are you sure you want to delete this appointment?'
@@ -67,10 +74,9 @@ export default function Appointment(props) {
       )}
       {mode === SHOW && (
         <Show
-          // appointmentId={props.id}
           student={props.interview.student}
           interviewer={props.interview.interviewer /* {id, name, avater} */}
-          // onEdit={}
+          onEdit={() => transition(EDIT)}
           onDelete={() => {transition(CONFIRM)}}
         />
       )}
