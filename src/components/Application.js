@@ -53,9 +53,8 @@ export default function Application() {
 
   /**
    * Create a new appointment and puts it in state
-   * @param {number} id state.appointments id
+   * @param {number} id appointment id
    * @param {object} interview { student: "Archie Cohen", interviewer: 10 }
-   *
    */
   function bookInterview(id, interview) {
     
@@ -80,13 +79,39 @@ export default function Application() {
       [id]: appointment
     };
 
-    //Replace state with a copy that has the new appointments object in it
-    setState(prev => ({...prev, appointments}));
+    return axios.put(`/api/appointments/${id}`, appointment)
+      .then(() => {
+        //Replace state with a copy that has the new appointments object in it
+        setState(prev => ({...prev, appointments}));
+      });
   }  
-  
+
+  /**
+   * Sets appointment info to null
+   * @param {number} id appointment id
+   */
+  function cancelInterview(id) {
+    if (state.appointments[id]) state.appointments[id] = null;
+
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    return axios.delete(`/api/appointments/${id}`)
+      .then(() => {
+        //Replace state with a copy that has the new appointments object in it
+        setState(prev => ({...prev, appointments}));
+      });
+    
+  }
+
   //This should only run once, when the app is first initialized :)
   useEffect(() => {
-
     Promise.all([
       axios.get('/api/days'),
       axios.get('/api/appointments'),
@@ -153,8 +178,8 @@ export default function Application() {
 
             //get inteverview object (that contains the entire interviewer object
             //instead of just the interviewer id)
+            //{ student: "Archie Cohen", interviewer: {id, name, avatar} }
             const interview = getInterview(state, appointment.interview);
-            
             const interviewers = getInterviewersForDay(state, state.day);
             
             return (
@@ -165,6 +190,7 @@ export default function Application() {
                 interview={interview}
                 interviewers={interviewers}
                 bookInterview={bookInterview /* function to book interview */}
+                onDelete={cancelInterview}
               />
             );
           })

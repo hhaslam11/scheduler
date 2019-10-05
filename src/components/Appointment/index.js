@@ -4,6 +4,9 @@ import Header from "./Header";
 import Show from "./Show";
 import Empty from "./Empty";
 import Form from "./Form";
+import Status from "./Status";
+import Confirm from "./Confirm";
+import Edit from "./Edit";
 import "./styles.scss";
 
 //modes
@@ -11,9 +14,14 @@ import useVisualMode from "hooks/useVisualMode";
 const EMPTY = "EMPTY";
 const SHOW = "SHOW";
 const CREATE = "CREATE";
+const EDIT = "EDIT";
+const SAVING = "SAVING";
+const DELETING = "DELETING";
+const CONFIRM = "CONFIRM";
 
 /**
  * @param {object} props {key, id, time, interview (object), bookInterview (function)}
+ * interview = { student: "Archie Cohen", interviewer: {id, name, avatar} }
  */
 export default function Appointment(props) {
   const { mode, transition, back } = useVisualMode(
@@ -30,21 +38,40 @@ export default function Appointment(props) {
       student: name,
       interviewer
     };
-    transition(SHOW);
+    transition(SAVING);
 
-    //TODO the bookInterview function currently accepts an appointments ID, while
-    //this call is passing in the interviewer Id. i think something is wrong here. :/
-    props.bookInterview(interviewer, interview);
+    props.bookInterview(props.id, interview)
+      .then(() => {transition(SHOW)});
+  }
+
+  function onDelete() {
+    transition(DELETING);
+
+    props.onDelete(props.id)
+      .then(() => {transition(SHOW)});
   }
 
   return (
     <article className="appointment">
       <Header time={props.time}/>
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
+      {mode === SAVING && <Status message='Saving...' />}
+      {mode === DELETING && <Status message='Deleting...' />}
+      {mode === EDIT && <Edit />}
+      {mode === CONFIRM && (
+        <Confirm
+          message='Are you sure you want to delete this appointment?'
+          onCancel={back}
+          onConfirm={onDelete}
+        />
+      )}
       {mode === SHOW && (
         <Show
+          // appointmentId={props.id}
           student={props.interview.student}
           interviewer={props.interview.interviewer /* {id, name, avater} */}
+          // onEdit={}
+          onDelete={() => {transition(CONFIRM)}}
         />
       )}
       {mode === CREATE &&

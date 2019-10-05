@@ -9,7 +9,7 @@ import "./styles.scss";
  */
 export default function Form(props) {
   const [name, setName] = useState(props.name || "");
-  const [interviewer, setInterviewer] = useState(props.interviewer || null); //TODO is this an object or id? interviewer list depending on it to be an id, but that might not be correct
+  const [interviewer, setInterviewer] = useState(props.interviewer || null);
   
   function reset() {
     setName("");

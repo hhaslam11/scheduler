@@ -3,10 +3,6 @@ import InterviewerListItem from "./InterviewerListItem";
 
 import "./InterviewerList.scss";
 
-/*
-interviewers={props.interviewers} value={interviewer} onChange={setInterviewer} />
-*/
-
 /**
  * @param {object} props {interviewers (object from top level -application- state), value (interviewer id) onChange (function to setInterviewer)} 
  */
