@@ -104,6 +104,7 @@ export default function Application() {
 
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
+        console.log('This should not run');
         //Replace state with a copy that has the new appointments object in it
         setState(prev => ({...prev, appointments}));
       });
