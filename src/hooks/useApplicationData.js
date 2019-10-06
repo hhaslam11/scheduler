@@ -7,6 +7,8 @@ export default function useApplicationData() {
   const SET_DAY = "SET_DAY";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
+  const SUBTRACT = "SUBTRACT";
+  const ADD = "ADD";
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -15,7 +17,30 @@ export default function useApplicationData() {
       case SET_APPLICATION_DATA:
         return { ...state, days: action.days, appointments: action.appointments, interviewers: action.interviewers}
       case SET_INTERVIEW:
-        return { ...state, appointments: action.value}
+
+        //get current day object, copy to newDay
+        let currentDay;
+        let currentDayIndex;
+
+        for (let i = 0; i < state.days.length; i++) {
+          if (state.day === state.days[i].name) {
+            currentDay = {...state.days[i]};
+            currentDayIndex = i;
+          }
+        }
+
+        //replace spots with new value
+        if (action.updateDays === ADD) {
+          currentDay.spots++;
+        } else {
+          currentDay.spots--;
+        }
+
+        //create new days object with newDay
+        const newDays = [...state.days];
+        newDays[currentDayIndex] = currentDay;
+
+        return { ...state, appointments: action.value, days: newDays}
       default:
         throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
     }
@@ -39,7 +64,7 @@ export default function useApplicationData() {
     };
 
     return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments}));
+      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments, updateDays: SUBTRACT}));
   }  
 
   function cancelInterview(id) {
@@ -55,7 +80,7 @@ export default function useApplicationData() {
     };
 
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments}));
+      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments, updateDays: ADD}));
     
   }
 
