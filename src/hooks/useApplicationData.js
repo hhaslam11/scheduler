@@ -1,88 +1,47 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import axios from "axios";
 
 export default function useApplicationData() {
-  /**
-   * ~~ State contains the following information ~~
-   * 
-   * day: string | the day that is selected.
-   * days: Array of objects =>
-   *    {
-   *     id: 1,
-   *     name: "Monday",
-   *     appointments: [1,2,3,4,5],
-   *     interviewers: [2,3,5,7,10],
-   *     spots: 3
-   *    }
-   * appointments: object of objects => 
-   *    {
-   *      1: {
-   *        id: 1,
-   *        time: "12pm",
-   *        interview: { student: "Archie Cohen", interviewer: 10 }
-   *        }
-   *      ...
-   *    }
-   * interviewers: object of objects => 
-   *    {
-   *      1: {
-   *        id: 1,
-   *        name: "Sylvia Palmer",
-   *        avatar: "https://i.imgur.com/LpaY82x.png"
-   *        }
-   *    }
-   */
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {}
-  });  
+
+  //reducer actions
+  const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
+  const SET_INTERVIEW = "SET_INTERVIEW";
+
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case SET_DAY:
+        return { ...state, day: action.value };
+      case SET_APPLICATION_DATA:
+        return { ...state, days: action.days, appointments: action.appointments, interviewers: action.interviewers}
+      case SET_INTERVIEW:
+        return { ...state, appointments: action.value}
+      default:
+        throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
+    }
+  };
+
+  const [state, dispatch] = useReducer(reducer, {day: "Monday", days: [], appointments: {}, interviewers: {}});
 
   //Changes day in the state || "Monday", "Tuesday", etc..
-  const setDay = day => setState(prev => {
-    return ({ ...prev, day});
-  });
+  const setDay = day => dispatch({ type: SET_DAY, value: day});
 
-  /**
-   * Create a new appointment and puts it in state
-   * @param {number} id appointment id
-   * @param {object} interview { student: "Archie Cohen", interviewer: 10 }
-   */
   function bookInterview(id, interview) {
     
-    /*
-     * id: state.appointments[id].id
-     * time: state.appointments[id].time,
-     * interview: interview
-     */
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
     };
 
-    /*
-     * All of state.appointments
-     * and replacing appointments[id] with 
-     * the new appointment created above
-     * that has the new interview
-     */
     const appointments = {
       ...state.appointments,
       [id]: appointment
     };
 
     return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => {
-        //Replace state with a copy that has the new appointments object in it
-        setState(prev => ({...prev, appointments}));
-      });
+      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments}));
   }  
 
-  /**
-   * Sets appointment info to null
-   * @param {number} id appointment id
-   */
   function cancelInterview(id) {
     if (state.appointments[id]) state.appointments[id] = null;
 
@@ -96,10 +55,7 @@ export default function useApplicationData() {
     };
 
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => {
-        //Replace state with a copy that has the new appointments object in it
-        setState(prev => ({...prev, appointments}));
-      });
+      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments}));
     
   }
 
@@ -116,21 +72,7 @@ export default function useApplicationData() {
         const appointments = res[1].data;
         const interviewers = res[2].data;
 
-        /*
-         * Puts the data from the api into state
-         *
-         * prev probably doesnt need to be used here
-         * (this only runs once, and state should be empty at this point anyways)
-         * but I'll keep it here anyways, just in case~
-         */
-        setState(prev => {
-          return {
-            ...prev,
-            days,
-            appointments,
-            interviewers
-          }
-        });
+        dispatch({type: SET_APPLICATION_DATA, days, appointments, interviewers});
       });
   }, []);
 
