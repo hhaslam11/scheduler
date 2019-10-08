@@ -85,5 +85,11 @@ export default {
         statusText: 'Not found'
       });
     }
+  }),
+  put: jest.fn(url => {
+    return Promise.resolve({
+      status: 204,
+      statusText: 'No Context'
+    });
   })
 }
