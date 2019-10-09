@@ -68,8 +68,7 @@ export default function useApplicationData() {
   }  
 
   function cancelInterview(id) {
-    if (state.appointments[id]) state.appointments[id] = null;
-
+    
     const appointment = {
       ...state.appointments[id],
       interview: null
@@ -78,9 +77,12 @@ export default function useApplicationData() {
       ...state.appointments,
       [id]: appointment
     };
-
+    
     return axios.delete(`/api/appointments/${id}`)
-      .then(() => dispatch({ type: SET_INTERVIEW, value: appointments, updateDays: ADD}));
+      .then(() => {
+        dispatch({ type: SET_INTERVIEW, value: appointments, updateDays: ADD});
+      })
+      .catch((e) => console.log('error: ', e));
     
   }
 
