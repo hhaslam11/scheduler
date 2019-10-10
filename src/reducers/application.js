@@ -1,7 +1,7 @@
 //reducer actions
-const SET_DAY = "SET_DAY";
-const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-const SET_INTERVIEW = "SET_INTERVIEW";
+const SET_DAY = 'SET_DAY';
+const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
+const SET_INTERVIEW = 'SET_INTERVIEW';
 
 export { SET_DAY, SET_APPLICATION_DATA, SET_INTERVIEW };
 export default (state, action) => {

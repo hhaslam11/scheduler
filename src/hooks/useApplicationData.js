@@ -1,10 +1,10 @@
-import { useReducer, useEffect } from "react";
-import axios from "axios";
+import { useReducer, useEffect } from 'react';
+import axios from 'axios';
 import reducer, {
   SET_DAY,
   SET_APPLICATION_DATA,
   SET_INTERVIEW
-} from "reducers/application";
+} from 'reducers/application';
 
 
 /*
@@ -13,7 +13,7 @@ import reducer, {
 * days: Array of objects =>
 *    {
 *     id: 1,
-*     name: "Monday",
+*     name: 'Monday',
 *     appointments: [1,2,3,4,5],
 *     interviewers: [2,3,5,7,10],
 *     spots: 3
@@ -22,8 +22,8 @@ import reducer, {
 *    {
 *      1: {
 *        id: 1,
-*        time: "12pm",
-*        interview: { student: "Archie Cohen", interviewer: 10 }
+*        time: '12pm',
+*        interview: { student: 'Archie Cohen', interviewer: 10 }
 *        }
 *      ...
 *    }
@@ -31,17 +31,17 @@ import reducer, {
 *    {
 *      1: {
 *        id: 1,
-*        name: "Sylvia Palmer",
-*        avatar: "https://i.imgur.com/LpaY82x.png"
+*        name: 'Sylvia Palmer',
+*        avatar: 'https://i.imgur.com/LpaY82x.png'
 *        }
 *    }
 */
 
 export default function useApplicationData() {
 
-  const [state, dispatch] = useReducer(reducer, {day: "Monday", days: [], appointments: {}, interviewers: {}});
+  const [state, dispatch] = useReducer(reducer, {day: 'Monday', days: [], appointments: {}, interviewers: {}});
 
-  //Changes day in the state || "Monday", "Tuesday", etc..
+  //Changes day in the state || 'Monday', 'Tuesday', etc..
   const setDay = day => dispatch({ type: SET_DAY, value: day});
 
   function bookInterview(id, interview) {
