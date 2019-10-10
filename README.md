@@ -1,7 +1,11 @@
 # Interview Scheduler
 A react application that allows users to schedule, edit, and cancel interviews.
 
+![screenshot](https://github.com/hhaslam11/scheduler/blob/master/docs/images/screen1.png)
 
+![screenshot](https://github.com/hhaslam11/scheduler/blob/master/docs/images/screen3.png)
+
+![screenshot](https://github.com/hhaslam11/scheduler/blob/master/docs/images/screen2.png)
 
 
 
