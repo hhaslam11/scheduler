@@ -14,7 +14,6 @@ export default function InterviewerList(props) {
     onChange: PropTypes.func.isRequired
   };
 
-  
   const interviewers = props.interviewers.map(interviewer => {
     return (
       <InterviewerListItem
@@ -22,8 +21,8 @@ export default function InterviewerList(props) {
         id={interviewer.id}
         name={interviewer.name}
         avatar={interviewer.avatar}
-        value={props.value === interviewer.id /* checks if */}
-        onChange={event => props.onChange(interviewer.id)}
+        value={props.value === interviewer.id}
+        onChange={() => props.onChange(interviewer.id)}
       />
     );
   });
@@ -35,6 +34,5 @@ export default function InterviewerList(props) {
         {interviewers}
       </ul>
     </section>
-  )  
-
+  )
 }

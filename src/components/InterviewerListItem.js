@@ -5,7 +5,6 @@ import classnames from "classnames";
 import "./InterviewerListItem.scss";
 
 /**
- * 
  * @param {object} props {id, name, avatar, value (boolean), onChange (function to change interviewer)}
  */
 export default function InterviewerListItem(props) {

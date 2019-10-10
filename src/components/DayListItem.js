@@ -4,7 +4,6 @@ import classnames from"classnames";
 //styles
 import "./DayListItem.scss";
 
-
 function renderSpots(spots) {
   if (spots === 0) return 'no spots remaining';
   if (spots === 1) return '1 spot remaining';
@@ -19,8 +18,7 @@ export default function DayListItem(props) {
   });
   
   return (
-    <li 
-
+    <li
       className={dayClass} 
       onClick={() => props.setDay(props.name)}
       data-testid="day"
