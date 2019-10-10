@@ -1,6 +1,7 @@
 import React from "react";
 
 import { render, cleanup, waitForElement, fireEvent, getByText, prettyDOM, getAllByTestId, getByAltText, getByPlaceholderText, queryByText, queryByAltText } from "@testing-library/react";
+import axios from "axios";
 
 import Application from "components/Application";
 
@@ -103,4 +104,51 @@ describe('Application', () => {
     expect(getByText(day, "1 spot remaining")).toBeInTheDocument();
 
   });
+
+  it("shows the save error when failing to save an appointment", async () => {
+    axios.put.mockRejectedValueOnce();
+
+    const { container } = render(<Application />);
+  
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+  
+    const appointments = getAllByTestId(container, "appointment");
+    const appointment = appointments[0];
+
+    fireEvent.click(getByAltText(appointment, 'Add'));
+
+    fireEvent.change(getByPlaceholderText(appointment, /enter student name/i), {
+      target: { value: 'Lydia Miller-Jones' }
+    });
+    fireEvent.click(getByAltText(appointment, "Sylvia Palmer"));
+
+    fireEvent.click(getByText(appointment, 'Save'));
+    
+    expect(getByText(appointment, /saving/i)).toBeInTheDocument();
+    await waitForElement(() => getByText(appointment, /error/i));
+
+  });
+
+  it("shows the delete error when failing to delete an existing appointment", async () => {
+    axios.delete.mockRejectedValueOnce();
+
+    const { container } = render(<Application />);
+
+    await waitForElement(() => getByText(container, "Archie Cohen"));
+    
+    const appointment = getAllByTestId(container, "appointment").find(
+      appointment => queryByText(appointment, "Archie Cohen")
+    );
+    fireEvent.click(queryByAltText(appointment, "Delete"));
+
+    expect(getByText(appointment, /Are you sure you want to delete this appointment/i)).toBeInTheDocument();
+
+    fireEvent.click(queryByText(appointment, "Confirm"));
+
+    expect(getByText(appointment, /Deleting/i)).toBeInTheDocument();
+    
+    await waitForElement(() => getByText(appointment, /error/i));
+
+  });
+
 });

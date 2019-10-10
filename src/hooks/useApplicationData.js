@@ -1,5 +1,11 @@
 import { useReducer, useEffect } from "react";
 import axios from "axios";
+import reducer, {
+  SET_DAY,
+  SET_APPLICATION_DATA,
+  SET_INTERVIEW
+} from "reducers/application";
+
 
 /*
 * 
@@ -32,58 +38,6 @@ import axios from "axios";
 */
 
 export default function useApplicationData() {
-
-  //reducer actions
-  const SET_DAY = "SET_DAY";
-  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  const SET_INTERVIEW = "SET_INTERVIEW";
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case SET_DAY:
-        return { ...state, day: action.value };
-      case SET_APPLICATION_DATA:
-        return { ...state, days: action.days, appointments: action.appointments, interviewers: action.interviewers}
-      case SET_INTERVIEW:
-
-        let matchingDay;
-        state.days.forEach(dayObject => {
-          if (dayObject.name === state.day) matchingDay = dayObject;
-        });
-      
-        //Get array of appointments
-        const appointmentsArr   = [];
-        const appointments = action.value;
-        for (const id of matchingDay.appointments) {
-          if(appointments[id]) appointmentsArr.push(appointments[id]);
-        }
-        if (!appointmentsArr.length) return [];
-
-
-        let appointmentCount = 0;
-        for (let i of appointmentsArr) {
-          if (i.interview) appointmentCount++;
-        }
-        
-        appointmentCount = appointmentsArr.length - appointmentCount;
-        let currentDay;
-        let currentDayIndex;
-           for (let i = 0; i < state.days.length; i++) {
-          if (state.day === state.days[i].name) {
-            currentDay = {...state.days[i]};
-            currentDayIndex = i;
-          }
-        }
-        
-        currentDay.spots = appointmentCount;
-        const newDays = [...state.days];
-        newDays[currentDayIndex] = currentDay;
-        return { ...state, appointments: action.value, days: newDays}
-
-      default:
-        throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
-    }
-  };
 
   const [state, dispatch] = useReducer(reducer, {day: "Monday", days: [], appointments: {}, interviewers: {}});
 
@@ -120,8 +74,7 @@ export default function useApplicationData() {
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, value: appointments});
-      })
-      .catch((e) => console.log('error: ', e));
+      });
     
   }
 
