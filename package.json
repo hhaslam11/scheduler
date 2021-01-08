@@ -44,7 +44,7 @@
     "@testing-library/jest-dom": "^4.1.0",
     "@testing-library/react": "^8.0.9",
     "cypress": "^3.4.1",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "prop-types": "^15.7.2"
   },
   "jest": {
